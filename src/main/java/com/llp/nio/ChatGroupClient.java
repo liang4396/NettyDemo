@@ -79,10 +79,10 @@ public class ChatGroupClient {
 
     public static void main(String[] args) {
         //新建我们的客户端代码
-        ChatGroupClient chatGroupClient = new ChatGroupClient();
+        final ChatGroupClient chatGroupClient = new ChatGroupClient();
         new Thread(new Runnable() {
-            @Override
             public void run() {
+
                 //每隔3秒读取从服务端发送的数据
                 chatGroupClient.readMsg();
             }
