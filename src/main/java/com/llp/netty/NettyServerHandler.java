@@ -6,6 +6,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * @author llp
@@ -19,12 +21,46 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      * ChannelHandlerContext ctx 上下文对象 含有管道 pipeline 通道 channel 地址
      * msg 就是客户端发送过来的消息 默认是Object类型*/
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("server ctx :" + ctx);
+    public void channelRead(final ChannelHandlerContext ctx, Object msg) throws Exception {
+
+/*        ctx.channel().eventLoop().execute(new Runnable() {
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端 1", CharsetUtil.UTF_8));
+                    System.out.println("go  on ..............");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        ctx.channel().eventLoop().execute(new Runnable() {
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(20);
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端 3", CharsetUtil.UTF_8));
+                    System.out.println("go  on ..............");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });*/
+        ctx.channel().eventLoop().schedule(new Runnable() {
+            public void run() {
+                try {
+                    TimeUnit.SECONDS.sleep(10);
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端 4", CharsetUtil.UTF_8));
+                    System.out.println("go  on ..............");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        },10,TimeUnit.SECONDS);
+/*        System.out.println("server ctx :" + ctx);
         //将msg转成bytebuf 是netty提供的
         ByteBuf byteBuf = (ByteBuf) msg;
         System.out.println("客户端发送的消息是 msg :" + byteBuf.toString(CharsetUtil.UTF_8));
-        System.out.println("客户端地址是:" + ctx.channel().remoteAddress());
+        System.out.println("客户端地址是:" + ctx.channel().remoteAddress());*/
     }
 
     /*
@@ -33,7 +69,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         //write Flush 是write+Flush
         //将数据写入缓存并刷新
-        ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端", CharsetUtil.UTF_8));
+        ctx.writeAndFlush(Unpooled.copiedBuffer("hello 客户端 2", CharsetUtil.UTF_8));
     }
 
     /*
